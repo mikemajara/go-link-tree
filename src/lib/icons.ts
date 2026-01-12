@@ -1,4 +1,5 @@
-import { Icon, Image } from "@raycast/api";
+import type { Image } from "@raycast/api";
+import { Icon } from "@raycast/api";
 
 /**
  * Resolves an icon string to a Raycast-compatible icon source.
@@ -20,7 +21,9 @@ export function resolveIcon(iconString?: string): Icon | Image.ImageLike {
     const parts = iconString.split(":");
     if (parts.length === 3) {
       const [, iconSet, iconName] = parts;
-      return { source: `https://api.iconify.design/${iconSet}/${iconName}.svg` };
+      return {
+        source: `https://api.iconify.design/${iconSet}/${iconName}.svg`,
+      };
     }
   }
 
@@ -56,7 +59,9 @@ export function resolveIcon(iconString?: string): Icon | Image.ImageLike {
   // Assume it's a SimpleIcons icon name (e.g., "github", "gitlab", "slack")
   // This allows shorthand like icon: "github" instead of icon: "iconify:simple-icons:github"
   if (/^[a-z0-9]+$/i.test(iconString)) {
-    return { source: `https://api.iconify.design/simple-icons/${iconString.toLowerCase()}.svg` };
+    return {
+      source: `https://api.iconify.design/simple-icons/${iconString.toLowerCase()}.svg`,
+    };
   }
 
   // Default: return Link icon

@@ -12,7 +12,7 @@ import { promisify } from "util";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import { Link } from "../types";
+import type { Link } from "../types";
 import { resolveIcon } from "../lib/icons";
 import { getIconForUrl } from "../lib/domain-icons";
 
@@ -147,7 +147,6 @@ function resolveProfileDirectory(app: string, profileName: string): string {
 
 export function LinkItem({
   link,
-  groupTitle,
   defaultBrowser,
   defaultProfile,
 }: LinkItemProps) {

@@ -1,9 +1,16 @@
-import { List, Icon, showToast, Toast, ActionPanel, Action } from "@raycast/api";
+import {
+  List,
+  Icon,
+  showToast,
+  Toast,
+  ActionPanel,
+  Action,
+} from "@raycast/api";
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as fs from "fs";
 import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
-import { GoLinkConfig } from "./types";
+import type { GoLinkConfig } from "./types";
 
 export default function Command() {
   const [config, setConfig] = useState<GoLinkConfig | null>(null);
@@ -23,7 +30,8 @@ export default function Command() {
         message: `Loaded ${loadedConfig.groups.reduce((sum, g) => sum + g.links.length, 0)} links`,
       });
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load configuration";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load configuration";
       setError(errorMessage);
       showToast({
         style: Toast.Style.Failure,
@@ -51,27 +59,31 @@ export default function Command() {
             watcherRef.current.close();
           }
 
-          watcherRef.current = fs.watch(configPath, { persistent: false }, (eventType, filename) => {
-            if (eventType === "change" && filename) {
-              // Debounce rapid changes (e.g., when saving in editor)
-              if (debounceTimer) {
-                clearTimeout(debounceTimer);
-              }
-              debounceTimer = setTimeout(() => {
-                reloadConfig();
-                debounceTimer = null;
-              }, 300);
-            } else if (eventType === "rename") {
-              // File was deleted or moved - try to reload (will show error if file doesn't exist)
-              setTimeout(() => {
-                reloadConfig();
-                // Try to re-setup watcher if file exists again
-                if (fs.existsSync(configPath)) {
-                  setupWatcher();
+          watcherRef.current = fs.watch(
+            configPath,
+            { persistent: false },
+            (eventType, filename) => {
+              if (eventType === "change" && filename) {
+                // Debounce rapid changes (e.g., when saving in editor)
+                if (debounceTimer) {
+                  clearTimeout(debounceTimer);
                 }
-              }, 500);
+                debounceTimer = setTimeout(() => {
+                  reloadConfig();
+                  debounceTimer = null;
+                }, 300);
+              } else if (eventType === "rename") {
+                // File was deleted or moved - try to reload (will show error if file doesn't exist)
+                setTimeout(() => {
+                  reloadConfig();
+                  // Try to re-setup watcher if file exists again
+                  if (fs.existsSync(configPath)) {
+                    setupWatcher();
+                  }
+                }, 500);
+              }
             }
-          });
+          );
         }
       } catch (err) {
         // File watching failed, but don't block the extension
@@ -169,7 +181,11 @@ export default function Command() {
           subtitle={`${group.links.length} link${group.links.length !== 1 ? "s" : ""}`}
         >
           {group.links.map((link, index) => (
-            <LinkItem key={`${link.url}-${index}`} link={link} groupTitle={group.title} />
+            <LinkItem
+              key={`${link.url}-${index}`}
+              link={link}
+              groupTitle={group.title}
+            />
           ))}
         </List.Section>
       ))}

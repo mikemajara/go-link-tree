@@ -1,3 +1,4 @@
+import type { LaunchProps } from "@raycast/api";
 import {
   List,
   Icon,
@@ -5,13 +6,12 @@ import {
   Toast,
   ActionPanel,
   Action,
-  LaunchProps,
 } from "@raycast/api";
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as fs from "fs";
 import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
-import { GoLinkConfig, Link } from "./types";
+import type { GoLinkConfig, Link } from "./types";
 
 interface GoArguments {
   query?: string;
