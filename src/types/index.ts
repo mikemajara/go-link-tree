@@ -2,6 +2,7 @@ export interface GoLinkConfig {
   version: number;
   settings?: {
     defaultBrowser?: string;
+    defaultProfile?: string; // default browser profile (e.g., "Profile 1" for Chrome)
     showFavicons?: boolean;
   };
   groups: LinkGroup[];
@@ -21,6 +22,7 @@ export interface Link {
   keywords?: string[]; // searchable aliases
   icon?: string;
   application?: string; // app name or bundle identifier (e.g., "com.google.Chrome")
+  profile?: string; // browser profile name (e.g., "Profile 1", "Work", "Personal")
 }
 
 export interface LinkTemplate {

@@ -6,6 +6,7 @@ version: 1
 # Global settings
 settings:
   defaultBrowser: "default" # or "chrome", "firefox", "safari", etc.
+  # defaultProfile: "Profile 1" # optional: default browser profile for Chrome/Brave/Firefox
   showFavicons: true
 
 # Link groups (become List.Section)
@@ -49,6 +50,7 @@ groups:
         url: "https://mail.google.com"
         keywords: ["email", "inbox"]
         application: "com.google.Chrome" # Open specifically in Chrome
+        profile: "Default" # Optional: specific browser profile
 
 # Templates for dynamic URLs (stretch goal - not yet implemented)
 templates:

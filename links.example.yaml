@@ -15,6 +15,13 @@ settings:
   #   - Arc: company.thebrowser.Browser
   #   - Edge: com.microsoft.edgemac
   defaultBrowser: "default"
+
+  # Default browser profile (optional, can be overridden per-link)
+  # For Chrome/Brave/Edge: Use the profile directory name (e.g., "Profile 1", "Default")
+  #   - Find your profile names in: ~/Library/Application Support/Google/Chrome/
+  # For Firefox: Use the profile name from about:profiles
+  # defaultProfile: "Profile 1"
+
   showFavicons: true
 
 # Link groups (become List.Section)
@@ -86,7 +93,7 @@ groups:
         # Auto-detected: Spotify icon
 
   - name: browser-specific
-    title: "🌐 Browser-Specific Examples"
+    title: "🌐 Browser & Profile Examples"
     links:
       # Per-link application override examples
       # These will open in the specified browser regardless of defaultBrowser setting
@@ -116,6 +123,33 @@ groups:
         url: "https://www.apple.com/safari"
         keywords: ["safari", "apple"]
         application: "com.apple.Safari"
+
+      # Profile examples - open links in specific browser profiles
+      # Useful for separating work/personal accounts
+
+      - title: "Work Gmail (Chrome Work Profile)"
+        url: "https://mail.google.com"
+        keywords: ["work", "email", "gmail"]
+        application: "com.google.Chrome"
+        profile: "Profile 1"  # Your work profile directory name
+
+      - title: "Personal Gmail (Chrome Personal)"
+        url: "https://mail.google.com"
+        keywords: ["personal", "email", "gmail"]
+        application: "com.google.Chrome"
+        profile: "Default"  # Default profile
+
+      - title: "Work Slack (Brave Work)"
+        url: "https://app.slack.com"
+        keywords: ["work", "slack", "chat"]
+        application: "com.brave.Browser"
+        profile: "Work"
+
+      - title: "Firefox Dev Profile"
+        url: "http://localhost:3000"
+        keywords: ["dev", "local", "firefox"]
+        application: "org.mozilla.firefox"
+        profile: "dev"  # Firefox profile name from about:profiles
 
   - name: custom-icons
     title: "🎨 Custom Icon Examples"

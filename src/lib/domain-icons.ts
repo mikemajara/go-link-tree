@@ -17,7 +17,7 @@ const ICONIFY_BASE = "https://api.iconify.design/simple-icons";
 // Domain to SimpleIcons icon name mapping
 const DOMAIN_ICON_MAP: Record<string, string> = {
   // Code & Development
-  "github.com": "github",
+  "github.com": "iconify:simple-icons:github",
   "gitlab.com": "gitlab",
   "bitbucket.org": "bitbucket",
   "stackoverflow.com": "stackoverflow",

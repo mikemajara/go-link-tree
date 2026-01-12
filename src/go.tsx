@@ -171,6 +171,7 @@ export default function Command(
           link={link}
           groupTitle={groupTitle}
           defaultBrowser={config?.settings?.defaultBrowser}
+          defaultProfile={config?.settings?.defaultProfile}
         />
       ))}
       {filteredLinks.length === 0 && !isLoading && (
