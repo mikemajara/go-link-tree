@@ -7,7 +7,7 @@ import {
   showToast,
   Toast,
 } from "@raycast/api";
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import { promisify } from "util";
 import * as fs from "fs";
 import * as os from "os";
@@ -16,7 +16,7 @@ import type { Link } from "../types";
 import { resolveIcon } from "../lib/icons";
 import { getIconForUrl } from "../lib/domain-icons";
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 interface LinkItemProps {
   link: Link;
@@ -192,38 +192,57 @@ export function LinkItem({
         b.toLowerCase() === app.toLowerCase() ||
         b.toLowerCase() === appName.toLowerCase()
     );
-
-    let command: string;
+    const isFirefox =
+      app.includes("firefox") || appName.toLowerCase().includes("firefox");
 
     if (binaryPath && fs.existsSync(binaryPath)) {
       // Use direct binary path - this works even when browser is already running
+      // Using execFile with array args prevents command injection
       if (isChromium) {
         const profileDir = resolveProfileDirectory(app, profile);
-        command = `"${binaryPath}" --profile-directory="${profileDir}" "${url}"`;
-      } else if (
-        app.includes("firefox") ||
-        appName.toLowerCase().includes("firefox")
-      ) {
-        command = `"${binaryPath}" -P "${profile}" "${url}"`;
+        await execFileAsync(binaryPath, [
+          `--profile-directory=${profileDir}`,
+          url,
+        ]);
+      } else if (isFirefox) {
+        await execFileAsync(binaryPath, ["-P", profile, url]);
       } else {
-        command = `"${binaryPath}" --profile-directory="${profile}" "${url}"`;
+        await execFileAsync(binaryPath, [
+          `--profile-directory=${profile}`,
+          url,
+        ]);
       }
     } else {
       // Fallback to open -a (works when app is not running)
+      // Using execFile with array args prevents command injection
       if (isChromium) {
         const profileDir = resolveProfileDirectory(app, profile);
-        command = `open -a "${appName}" --args --profile-directory="${profileDir}" "${url}"`;
-      } else if (
-        app.includes("firefox") ||
-        appName.toLowerCase().includes("firefox")
-      ) {
-        command = `open -a "${appName}" --args -P "${profile}" "${url}"`;
+        await execFileAsync("/usr/bin/open", [
+          "-a",
+          appName,
+          "--args",
+          `--profile-directory=${profileDir}`,
+          url,
+        ]);
+      } else if (isFirefox) {
+        await execFileAsync("/usr/bin/open", [
+          "-a",
+          appName,
+          "--args",
+          "-P",
+          profile,
+          url,
+        ]);
       } else {
-        command = `open -a "${appName}" --args --profile-directory="${profile}" "${url}"`;
+        await execFileAsync("/usr/bin/open", [
+          "-a",
+          appName,
+          "--args",
+          `--profile-directory=${profile}`,
+          url,
+        ]);
       }
     }
-
-    await execAsync(command);
   };
 
   const handleOpenInBrowser = async () => {
