@@ -185,9 +185,3 @@ groups:
         url: "https://example.com/sf"
         icon: "sf-symbol:star.fill"
         keywords: ["example"]
-
-# Templates for dynamic URLs (stretch goal - not yet implemented)
-templates:
-  - name: "GitHub PR"
-    pattern: "https://github.com/{org}/{repo}/pull/{pr}"
-    icon: "iconify:simple-icons:github"
