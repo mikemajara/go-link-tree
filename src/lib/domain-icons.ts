@@ -198,10 +198,22 @@ const DOMAIN_ICON_MAP: Record<string, string> = {
 };
 
 /**
- * Gets the Iconify URL for a SimpleIcons icon
+ * Gets the Iconify URL for an icon.
+ * Supports both formats:
+ *   - Simple name: "github" → https://api.iconify.design/simple-icons/github.svg
+ *   - Full spec: "iconify:simple-icons:github" → https://api.iconify.design/simple-icons/github.svg
  */
-function getIconifyUrl(iconName: string): string {
-  return `${ICONIFY_BASE}/${iconName}.svg`;
+function getIconifyUrl(iconSpec: string): string {
+  // Check if it's a full iconify spec (iconify:icon-set:icon-name)
+  if (iconSpec.startsWith("iconify:")) {
+    const parts = iconSpec.split(":");
+    if (parts.length === 3) {
+      const [, iconSet, iconName] = parts;
+      return `https://api.iconify.design/${iconSet}/${iconName}.svg`;
+    }
+  }
+  // Default: assume it's just an icon name for simple-icons
+  return `${ICONIFY_BASE}/${iconSpec}.svg`;
 }
 
 /**

@@ -17,10 +17,11 @@ settings:
   defaultBrowser: "default"
 
   # Default browser profile (optional, can be overridden per-link)
-  # For Chrome/Brave/Edge: Use the profile directory name (e.g., "Profile 1", "Default")
-  #   - Find your profile names in: ~/Library/Application Support/Google/Chrome/
+  # For Chrome/Brave/Edge: Use the profile display name (e.g., "Work", "Personal")
+  #   - This is the name you see in the browser's profile switcher
+  #   - Also works with directory names (e.g., "Profile 1", "Default")
   # For Firefox: Use the profile name from about:profiles
-  # defaultProfile: "Profile 1"
+  # defaultProfile: "Work"
 
   showFavicons: true
 
@@ -126,18 +127,19 @@ groups:
 
       # Profile examples - open links in specific browser profiles
       # Useful for separating work/personal accounts
+      # Use the profile display name you see in Chrome's profile switcher
 
       - title: "Work Gmail (Chrome Work Profile)"
         url: "https://mail.google.com"
         keywords: ["work", "email", "gmail"]
         application: "com.google.Chrome"
-        profile: "Profile 1"  # Your work profile directory name
+        profile: "Work"  # Your profile's display name
 
       - title: "Personal Gmail (Chrome Personal)"
         url: "https://mail.google.com"
         keywords: ["personal", "email", "gmail"]
         application: "com.google.Chrome"
-        profile: "Default"  # Default profile
+        profile: "Personal"  # Or use "Default" for the default profile
 
       - title: "Work Slack (Brave Work)"
         url: "https://app.slack.com"

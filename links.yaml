@@ -50,7 +50,7 @@ groups:
         url: "https://mail.google.com"
         keywords: ["email", "inbox"]
         application: "com.google.Chrome" # Open specifically in Chrome
-        profile: "Default" # Optional: specific browser profile
+        profile: "Personal" # Use your profile's display name (e.g., "Work", "Personal")
 
 # Templates for dynamic URLs (stretch goal - not yet implemented)
 templates:

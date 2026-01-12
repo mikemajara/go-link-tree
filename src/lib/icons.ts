@@ -4,6 +4,7 @@ import { Icon, Image } from "@raycast/api";
  * Resolves an icon string to a Raycast-compatible icon source.
  * Supports:
  * - Iconify icons (e.g., "iconify:simple-icons:github", "iconify:devicon:react-original")
+ * - SimpleIcons shorthand (e.g., "github", "gitlab", "slack") - alphanumeric names
  * - Raycast Icon enum keys (e.g., "Link", "Globe", "Code")
  * - SF Symbols (e.g., "sf-symbol:house.fill" or "house.fill")
  * - URL icons (e.g., "https://example.com/icon.png")
@@ -50,6 +51,12 @@ export function resolveIcon(iconString?: string): Icon | Image.ImageLike {
   // If it contains dots, it might be an SF Symbol name (e.g., "house.fill")
   if (iconString.includes(".")) {
     return { source: `sf-symbol:${iconString}` };
+  }
+
+  // Assume it's a SimpleIcons icon name (e.g., "github", "gitlab", "slack")
+  // This allows shorthand like icon: "github" instead of icon: "iconify:simple-icons:github"
+  if (/^[a-z0-9]+$/i.test(iconString)) {
+    return { source: `https://api.iconify.design/simple-icons/${iconString.toLowerCase()}.svg` };
   }
 
   // Default: return Link icon
