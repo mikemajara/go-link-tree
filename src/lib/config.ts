@@ -1,11 +1,7 @@
-import { getPreferenceValues } from "@raycast/api";
+import { getPreferenceValues, type Preferences } from "@raycast/api";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 import type { GoLinkConfig } from "../types";
-
-interface Preferences {
-  configPath: string;
-}
 
 /**
  * Gets the resolved config file path (with ~ expansion)
