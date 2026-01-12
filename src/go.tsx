@@ -13,12 +13,8 @@ import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
 import type { GoLinkConfig, Link } from "./types";
 
-interface GoArguments {
-  query?: string;
-}
-
 export default function Command(
-  props: LaunchProps<{ arguments: GoArguments }>
+  props: LaunchProps<{ arguments: Arguments.Go }>
 ) {
   const { query: initialQuery } = props.arguments;
   const [searchText, setSearchText] = useState(initialQuery || "");
