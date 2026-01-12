@@ -35,6 +35,22 @@ const BROWSER_APP_NAMES: Record<string, string> = {
   "com.microsoft.edgemac": "Microsoft Edge",
 };
 
+// Short display names for accessories
+const BROWSER_SHORT_NAMES: Record<string, string> = {
+  "com.google.Chrome": "Chrome",
+  "Google Chrome": "Chrome",
+  "com.brave.Browser": "Brave",
+  "Brave Browser": "Brave",
+  "org.mozilla.firefox": "Firefox",
+  Firefox: "Firefox",
+  "com.apple.Safari": "Safari",
+  Safari: "Safari",
+  "company.thebrowser.Browser": "Arc",
+  Arc: "Arc",
+  "com.microsoft.edgemac": "Edge",
+  "Microsoft Edge": "Edge",
+};
+
 // Chromium-based browsers use --profile-directory flag
 const CHROMIUM_BROWSERS = [
   "com.google.Chrome",
@@ -236,12 +252,30 @@ export function LinkItem({
     }
   };
 
+  // Build accessories array for browser/profile info
+  const accessories: List.Item.Accessory[] = [];
+  if (targetApplication) {
+    const shortName =
+      BROWSER_SHORT_NAMES[targetApplication] || targetApplication;
+    accessories.push({
+      text: shortName,
+      tooltip: `Browser: ${targetApplication}`,
+    });
+  }
+  if (targetProfile) {
+    accessories.push({
+      text: targetProfile,
+      tooltip: `Profile: ${targetProfile}`,
+    });
+  }
+
   return (
     <List.Item
       title={link.title}
       subtitle={link.url}
       keywords={link.keywords}
       icon={icon}
+      accessories={accessories}
       actions={
         <ActionPanel>
           <Action
