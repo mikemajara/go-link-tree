@@ -1,4 +1,12 @@
-import { List, Icon, showToast, Toast, ActionPanel, Action, LaunchProps } from "@raycast/api";
+import {
+  List,
+  Icon,
+  showToast,
+  Toast,
+  ActionPanel,
+  Action,
+  LaunchProps,
+} from "@raycast/api";
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as fs from "fs";
 import { loadConfig, getConfigPath } from "./lib/config";
@@ -9,7 +17,9 @@ interface GoArguments {
   query?: string;
 }
 
-export default function Command(props: LaunchProps<{ arguments: GoArguments }>) {
+export default function Command(
+  props: LaunchProps<{ arguments: GoArguments }>
+) {
   const { query: initialQuery } = props.arguments;
   const [searchText, setSearchText] = useState(initialQuery || "");
   const [config, setConfig] = useState<GoLinkConfig | null>(null);
@@ -24,7 +34,8 @@ export default function Command(props: LaunchProps<{ arguments: GoArguments }>) 
       setConfig(loadedConfig);
       setError(null);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load configuration";
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to load configuration";
       setError(errorMessage);
       showToast({
         style: Toast.Style.Failure,
@@ -51,24 +62,28 @@ export default function Command(props: LaunchProps<{ arguments: GoArguments }>) 
             watcherRef.current.close();
           }
 
-          watcherRef.current = fs.watch(configPath, { persistent: false }, (eventType, filename) => {
-            if (eventType === "change" && filename) {
-              if (debounceTimer) {
-                clearTimeout(debounceTimer);
-              }
-              debounceTimer = setTimeout(() => {
-                reloadConfig();
-                debounceTimer = null;
-              }, 300);
-            } else if (eventType === "rename") {
-              setTimeout(() => {
-                reloadConfig();
-                if (fs.existsSync(configPath)) {
-                  setupWatcher();
+          watcherRef.current = fs.watch(
+            configPath,
+            { persistent: false },
+            (eventType, filename) => {
+              if (eventType === "change" && filename) {
+                if (debounceTimer) {
+                  clearTimeout(debounceTimer);
                 }
-              }, 500);
+                debounceTimer = setTimeout(() => {
+                  reloadConfig();
+                  debounceTimer = null;
+                }, 300);
+              } else if (eventType === "rename") {
+                setTimeout(() => {
+                  reloadConfig();
+                  if (fs.existsSync(configPath)) {
+                    setupWatcher();
+                  }
+                }, 500);
+              }
             }
-          });
+          );
         }
       } catch (err) {
         console.error("Failed to set up file watcher:", err);
@@ -105,7 +120,9 @@ export default function Command(props: LaunchProps<{ arguments: GoArguments }>) 
     return allLinks.filter(({ link }) => {
       const titleMatch = link.title.toLowerCase().includes(query);
       const urlMatch = link.url.toLowerCase().includes(query);
-      const keywordsMatch = link.keywords?.some((kw) => kw.toLowerCase().includes(query));
+      const keywordsMatch = link.keywords?.some((kw) =>
+        kw.toLowerCase().includes(query)
+      );
       return titleMatch || urlMatch || keywordsMatch;
     });
   }, [config, searchText]);
@@ -149,13 +166,22 @@ export default function Command(props: LaunchProps<{ arguments: GoArguments }>) 
       filtering={false}
     >
       {filteredLinks.map(({ link, groupTitle }, index) => (
-        <LinkItem key={`${link.url}-${index}`} link={link} groupTitle={groupTitle} />
+        <LinkItem
+          key={`${link.url}-${index}`}
+          link={link}
+          groupTitle={groupTitle}
+          defaultBrowser={config?.settings?.defaultBrowser}
+        />
       ))}
       {filteredLinks.length === 0 && !isLoading && (
         <List.EmptyView
           icon={Icon.MagnifyingGlass}
           title="No Links Found"
-          description={searchText ? `No links match "${searchText}"` : "No links configured"}
+          description={
+            searchText
+              ? `No links match "${searchText}"`
+              : "No links configured"
+          }
         />
       )}
     </List>

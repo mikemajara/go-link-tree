@@ -1,4 +1,4 @@
-import { List, ActionPanel, Action, Icon } from "@raycast/api";
+import { List, ActionPanel, Action, Icon, open, showToast, Toast } from "@raycast/api";
 import { Link } from "../types";
 import { resolveIcon } from "../lib/icons";
 import { getIconForUrl } from "../lib/domain-icons";
@@ -6,9 +6,10 @@ import { getIconForUrl } from "../lib/domain-icons";
 interface LinkItemProps {
   link: Link;
   groupTitle?: string;
+  defaultBrowser?: string;
 }
 
-export function LinkItem({ link, groupTitle }: LinkItemProps) {
+export function LinkItem({ link, groupTitle, defaultBrowser }: LinkItemProps) {
   // Icon resolution priority:
   // 1. Explicit icon in config
   // 2. Domain-based auto-detection
@@ -23,6 +24,30 @@ export function LinkItem({ link, groupTitle }: LinkItemProps) {
     }
   }
 
+  // Application resolution priority:
+  // 1. Link-level application
+  // 2. Global defaultBrowser setting
+  // 3. System default (undefined)
+  const targetApplication = link.application || (defaultBrowser !== "default" ? defaultBrowser : undefined);
+
+  const handleOpenInBrowser = async () => {
+    if (targetApplication) {
+      try {
+        await open(link.url, targetApplication);
+      } catch (error) {
+        // Fallback to system default browser if specified app fails
+        await showToast({
+          style: Toast.Style.Animated,
+          title: `Could not open in ${targetApplication}`,
+          message: "Falling back to default browser...",
+        });
+        await open(link.url);
+      }
+    } else {
+      await open(link.url);
+    }
+  };
+
   return (
     <List.Item
       title={link.title}
@@ -31,7 +56,11 @@ export function LinkItem({ link, groupTitle }: LinkItemProps) {
       icon={icon}
       actions={
         <ActionPanel>
-          <Action.OpenInBrowser url={link.url} title="Open in Browser" />
+          <Action
+            icon={Icon.Globe}
+            title={targetApplication ? `Open in ${targetApplication}` : "Open in Browser"}
+            onAction={handleOpenInBrowser}
+          />
           <Action.CopyToClipboard
             content={link.url}
             title="Copy URL"

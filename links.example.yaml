@@ -5,7 +5,16 @@ version: 1
 
 # Global settings
 settings:
-  defaultBrowser: "default" # or "chrome", "firefox", "safari", etc.
+  # Default browser for all links (can be overridden per-link)
+  # Use "default" for system default, or specify app name/bundle identifier
+  # Common bundle identifiers:
+  #   - Chrome: com.google.Chrome
+  #   - Brave: com.brave.Browser
+  #   - Firefox: org.mozilla.firefox
+  #   - Safari: com.apple.Safari
+  #   - Arc: company.thebrowser.Browser
+  #   - Edge: com.microsoft.edgemac
+  defaultBrowser: "default"
   showFavicons: true
 
 # Link groups (become List.Section)
@@ -75,6 +84,38 @@ groups:
         url: "https://open.spotify.com"
         keywords: ["music", "playlists"]
         # Auto-detected: Spotify icon
+
+  - name: browser-specific
+    title: "🌐 Browser-Specific Examples"
+    links:
+      # Per-link application override examples
+      # These will open in the specified browser regardless of defaultBrowser setting
+      # If the specified app isn't installed, falls back to system default
+
+      - title: "Open in Chrome"
+        url: "https://chrome.google.com/webstore"
+        keywords: ["chrome", "extensions"]
+        application: "com.google.Chrome"
+
+      - title: "Open in Brave"
+        url: "https://brave.com"
+        keywords: ["brave", "privacy"]
+        application: "com.brave.Browser"
+
+      - title: "Open in Arc"
+        url: "https://arc.net"
+        keywords: ["arc"]
+        application: "company.thebrowser.Browser"
+
+      - title: "Open in Firefox"
+        url: "https://addons.mozilla.org"
+        keywords: ["firefox", "addons"]
+        application: "org.mozilla.firefox"
+
+      - title: "Open in Safari"
+        url: "https://www.apple.com/safari"
+        keywords: ["safari", "apple"]
+        application: "com.apple.Safari"
 
   - name: custom-icons
     title: "🎨 Custom Icon Examples"

@@ -48,6 +48,7 @@ groups:
       - title: "Gmail"
         url: "https://mail.google.com"
         keywords: ["email", "inbox"]
+        application: "com.google.Chrome" # Open specifically in Chrome
 
 # Templates for dynamic URLs (stretch goal - not yet implemented)
 templates:

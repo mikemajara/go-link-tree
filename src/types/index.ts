@@ -20,6 +20,7 @@ export interface Link {
   url: string;
   keywords?: string[]; // searchable aliases
   icon?: string;
+  application?: string; // app name or bundle identifier (e.g., "com.google.Chrome")
 }
 
 export interface LinkTemplate {
