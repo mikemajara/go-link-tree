@@ -1,5 +1,7 @@
 import { List, ActionPanel, Action, Icon } from "@raycast/api";
 import { Link } from "../types";
+import { resolveIcon } from "../lib/icons";
+import { getIconForUrl } from "../lib/domain-icons";
 
 interface LinkItemProps {
   link: Link;
@@ -7,15 +9,17 @@ interface LinkItemProps {
 }
 
 export function LinkItem({ link, groupTitle }: LinkItemProps) {
-  // Resolve icon - support SF Symbols (string) or Icon enum
-  let iconSource: Icon | { source: string } = Icon.Link;
-  if (link.icon) {
-    // Check if it's an SF Symbol name (string) or try to match Icon enum
-    const iconKey = link.icon as keyof typeof Icon;
-    if (Icon[iconKey]) {
-      iconSource = Icon[iconKey];
+  // Icon resolution priority:
+  // 1. Explicit icon in config
+  // 2. Domain-based auto-detection
+  // 3. Default Link icon
+  let icon = resolveIcon(link.icon);
+  if (!link.icon) {
+    const domainIcon = getIconForUrl(link.url);
+    if (domainIcon) {
+      icon = domainIcon;
     } else {
-      iconSource = { source: link.icon };
+      icon = Icon.Link;
     }
   }
 
@@ -24,7 +28,7 @@ export function LinkItem({ link, groupTitle }: LinkItemProps) {
       title={link.title}
       subtitle={link.url}
       keywords={link.keywords}
-      icon={iconSource}
+      icon={icon}
       actions={
         <ActionPanel>
           <Action.OpenInBrowser url={link.url} title="Open in Browser" />

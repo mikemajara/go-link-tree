@@ -12,20 +12,27 @@ settings:
 groups:
   - name: work
     title: "🏢 Work"
-    icon: "building" # SF Symbol or custom icon
     links:
+      # Auto-detected icons: URLs from popular services get branded icons automatically!
       - title: "GitHub"
         url: "https://github.com/myorg"
         keywords: ["gh", "code", "repos"]
-        icon: "github"
+        # No icon specified - GitHub logo auto-detected via Iconify!
 
       - title: "Jira Board"
         url: "https://myorg.atlassian.net/browse/PROJ"
         keywords: ["tickets", "issues", "bugs"]
+        # Auto-detected: Jira icon
 
-      - title: "Confluence"
-        url: "https://myorg.atlassian.net/wiki"
-        keywords: ["docs", "wiki"]
+      - title: "Slack"
+        url: "https://myworkspace.slack.com"
+        keywords: ["chat", "messages"]
+        # Auto-detected: Slack icon
+
+      - title: "Notion"
+        url: "https://notion.so/myworkspace"
+        keywords: ["docs", "wiki", "notes"]
+        # Auto-detected: Notion icon
 
   - name: dev
     title: "💻 Development"
@@ -33,14 +40,23 @@ groups:
       - title: "Localhost:3000"
         url: "http://localhost:3000"
         keywords: ["local", "dev"]
+        # Auto-detected: Terminal icon for localhost
 
-      - title: "Staging"
-        url: "https://staging.myapp.com"
-        keywords: ["stg", "test"]
+      - title: "Vercel Dashboard"
+        url: "https://vercel.com/dashboard"
+        keywords: ["deploy", "hosting"]
+        # Auto-detected: Vercel icon
 
-      - title: "Production"
-        url: "https://myapp.com"
-        keywords: ["prod", "live"]
+      - title: "Supabase"
+        url: "https://supabase.com/dashboard"
+        keywords: ["database", "backend"]
+        # Auto-detected: Supabase icon
+
+      # Custom Iconify icon example
+      - title: "React Docs"
+        url: "https://react.dev"
+        keywords: ["react", "docs", "frontend"]
+        icon: "iconify:devicon:react-original" # Explicit Iconify icon
 
   - name: personal
     title: "🏠 Personal"
@@ -48,9 +64,53 @@ groups:
       - title: "Gmail"
         url: "https://mail.google.com"
         keywords: ["email", "inbox"]
+        # Auto-detected: Gmail icon
+
+      - title: "YouTube"
+        url: "https://youtube.com"
+        keywords: ["video", "watch"]
+        # Auto-detected: YouTube icon
+
+      - title: "Spotify"
+        url: "https://open.spotify.com"
+        keywords: ["music", "playlists"]
+        # Auto-detected: Spotify icon
+
+  - name: custom-icons
+    title: "🎨 Custom Icon Examples"
+    links:
+      # Iconify format: "iconify:{icon-set}:{icon-name}"
+      # Browse icons at: https://icon-sets.iconify.design/
+
+      - title: "Material Design Icon"
+        url: "https://example.com/mdi"
+        icon: "iconify:mdi:home-circle"
+        keywords: ["example"]
+
+      - title: "Devicon"
+        url: "https://example.com/dev"
+        icon: "iconify:devicon:typescript-original"
+        keywords: ["example"]
+
+      - title: "Simple Icons (brands)"
+        url: "https://example.com/brand"
+        icon: "iconify:simple-icons:raycast"
+        keywords: ["example"]
+
+      # Raycast built-in icons (Icon enum)
+      - title: "Built-in Raycast Icon"
+        url: "https://example.com/builtin"
+        icon: "Globe"
+        keywords: ["example"]
+
+      # SF Symbol
+      - title: "SF Symbol"
+        url: "https://example.com/sf"
+        icon: "sf-symbol:star.fill"
+        keywords: ["example"]
 
 # Templates for dynamic URLs (stretch goal - not yet implemented)
 templates:
   - name: "GitHub PR"
     pattern: "https://github.com/{org}/{repo}/pull/{pr}"
-    icon: "git-pull-request"
+    icon: "iconify:simple-icons:github"

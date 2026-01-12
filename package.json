@@ -3,16 +3,27 @@
   "name": "go-link-tree",
   "title": "Go Link Tree",
   "description": "Quick access to your personal link tree",
-  "icon": "extension-icon.png",
+  "icon": "link.png",
   "author": "mikemajara",
-  "categories": ["Productivity", "Web"],
+  "categories": [
+    "Productivity",
+    "Web"
+  ],
   "license": "MIT",
   "commands": [
     {
-      "name": "index",
-      "title": "Search Links",
-      "description": "Search and open links from your link tree",
-      "mode": "view"
+      "name": "go",
+      "title": "Go",
+      "description": "Quick jump to links - type 'go' followed by your search",
+      "mode": "view",
+      "arguments": [
+        {
+          "name": "query",
+          "placeholder": "Search...",
+          "type": "text",
+          "required": false
+        }
+      ]
     }
   ],
   "preferences": [
