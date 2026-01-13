@@ -13,8 +13,14 @@ import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
 import type { GoLinkConfig, Link } from "./types";
 
+// Arguments type defined locally to satisfy strict build checks
+// (mirrors auto-generated Arguments.Go from raycast-env.d.ts)
+interface GoArguments {
+  query: string;
+}
+
 export default function Command(
-  props: LaunchProps<{ arguments: Arguments.Go }>
+  props: LaunchProps<{ arguments: GoArguments }>
 ) {
   const { query: initialQuery } = props.arguments;
   const [searchText, setSearchText] = useState(initialQuery || "");

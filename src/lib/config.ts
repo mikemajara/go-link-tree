@@ -1,13 +1,19 @@
-import { getPreferenceValues, type Preferences } from "@raycast/api";
+import { getPreferenceValues } from "@raycast/api";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
 import type { GoLinkConfig } from "../types";
+
+// Preferences type defined locally to satisfy strict build checks
+// (mirrors auto-generated ExtensionPreferences from raycast-env.d.ts)
+interface ExtensionPreferences {
+  configPath: string;
+}
 
 /**
  * Gets the resolved config file path (with ~ expansion)
  */
 export function getConfigPath(): string {
-  const { configPath } = getPreferenceValues<Preferences>();
+  const { configPath } = getPreferenceValues<ExtensionPreferences>();
   const homeDir = process.env.HOME || process.env.USERPROFILE || "";
   return configPath.replace(/^~/, homeDir);
 }

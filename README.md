@@ -49,24 +49,24 @@ groups:
 
 Global settings that apply to all links (can be overridden per-link).
 
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `defaultBrowser` | string | `"default"` | Browser to open links in |
-| `defaultProfile` | string | — | Browser profile to use |
-| `showFavicons` | boolean | `true` | Show favicons for links |
+| Setting          | Type    | Default     | Description              |
+| ---------------- | ------- | ----------- | ------------------------ |
+| `defaultBrowser` | string  | `"default"` | Browser to open links in |
+| `defaultProfile` | string  | —           | Browser profile to use   |
+| `showFavicons`   | boolean | `true`      | Show favicons for links  |
 
 ### Browser Identifiers
 
 Use these bundle identifiers for `defaultBrowser` or per-link `application`:
 
-| Browser | Bundle Identifier |
-|---------|------------------|
-| Chrome | `com.google.Chrome` |
-| Brave | `com.brave.Browser` |
-| Firefox | `org.mozilla.firefox` |
-| Safari | `com.apple.Safari` |
-| Arc | `company.thebrowser.Browser` |
-| Edge | `com.microsoft.edgemac` |
+| Browser | Bundle Identifier            |
+| ------- | ---------------------------- |
+| Chrome  | `com.google.Chrome`          |
+| Brave   | `com.brave.Browser`          |
+| Firefox | `org.mozilla.firefox`        |
+| Safari  | `com.apple.Safari`           |
+| Arc     | `company.thebrowser.Browser` |
+| Edge    | `com.microsoft.edgemac`      |
 
 ---
 
@@ -76,10 +76,10 @@ Organize links into logical groups. Each group creates a section in the list.
 
 ```yaml
 groups:
-  - name: work          # Unique identifier (required)
-    title: "🏢 Work"    # Display title (required)
-    icon: "building"    # Optional group icon
-    links: [...]        # Array of links
+  - name: work # Unique identifier (required)
+    title: "🏢 Work" # Display title (required)
+    icon: "building" # Optional group icon
+    links: [...] # Array of links
 ```
 
 ---
@@ -88,14 +88,14 @@ groups:
 
 Each link supports the following properties:
 
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `title` | string | ✅ | Display name |
-| `url` | string | ✅ | URL to open |
-| `keywords` | string[] | — | Search aliases |
-| `icon` | string | — | Custom icon (see Icons section) |
-| `application` | string | — | Browser to open this link in |
-| `profile` | string | — | Browser profile to use |
+| Property      | Type     | Required | Description                     |
+| ------------- | -------- | -------- | ------------------------------- |
+| `title`       | string   | ✅       | Display name                    |
+| `url`         | string   | ✅       | URL to open                     |
+| `keywords`    | string[] | —        | Search aliases                  |
+| `icon`        | string   | —        | Custom icon (see Icons section) |
+| `application` | string   | —        | Browser to open this link in    |
+| `profile`     | string   | —        | Browser profile to use          |
 
 ### Example
 
@@ -135,10 +135,10 @@ profile: "Default"
 
 ### Finding Profile Names
 
-| Browser | How to Find |
-|---------|-------------|
+| Browser           | How to Find                                           |
+| ----------------- | ----------------------------------------------------- |
 | Chrome/Brave/Edge | Open browser → Click profile icon → See profile names |
-| Firefox | Open `about:profiles` in Firefox |
+| Firefox           | Open `about:profiles` in Firefox                      |
 
 ### Example: Separate Work/Personal
 
@@ -230,13 +230,13 @@ icon: "Code"
 
 ### Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Enter` | Open in browser |
-| `⌘ C` | Copy URL |
-| `⌘ ⇧ C` | Copy as Markdown |
-| `⌘ R` | Reload configuration |
-| `⌘ E` | Edit configuration file |
+| Shortcut | Action                  |
+| -------- | ----------------------- |
+| `Enter`  | Open in browser         |
+| `⌘ C`    | Copy URL                |
+| `⌘ ⇧ C`  | Copy as Markdown        |
+| `⌘ R`    | Reload configuration    |
+| `⌘ E`    | Edit configuration file |
 
 ---
 
@@ -288,7 +288,7 @@ groups:
         url: "https://mail.google.com"
         keywords: ["email"]
         application: "com.google.Chrome"
-        profile: "Personal"  # Different profile for personal stuff
+        profile: "Personal" # Different profile for personal stuff
 
       - title: "YouTube"
         url: "https://youtube.com"
@@ -349,6 +349,7 @@ Make sure you're using the **display name** of your profile, not the directory n
 ### Config changes not reflecting?
 
 The extension hot-reloads config changes. If not working:
+
 1. Press `⌘ R` to manually reload
 2. Check for YAML syntax errors
 3. Ensure the file is saved
