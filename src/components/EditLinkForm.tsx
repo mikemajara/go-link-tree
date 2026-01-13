@@ -45,6 +45,7 @@ const NEW_GROUP_VALUE = "__new_group__";
 interface FormValues {
   title: string;
   url: string;
+  icon: string;
   keywords: string;
   application: string;
   profile: string;
@@ -108,7 +109,7 @@ export function EditLinkForm(props: EditLinkFormProps) {
         title: values.title.trim(),
         url: values.url.trim(),
         ...(keywords.length > 0 && { keywords }),
-        ...(props.mode === "edit" && props.link.icon && { icon: props.link.icon }),
+        ...(values.icon?.trim() && { icon: values.icon.trim() }),
         ...(values.application && { application: values.application }),
         ...(values.profile?.trim() && { profile: values.profile.trim() }),
       };
@@ -241,6 +242,13 @@ export function EditLinkForm(props: EditLinkFormProps) {
         placeholder="https://example.com"
         defaultValue={props.mode === "edit" ? props.link.url : ""}
         info="The URL to open"
+      />
+      <Form.TextField
+        id="icon"
+        title="Icon"
+        placeholder="🔗 or Link, Globe, Code..."
+        defaultValue={props.mode === "edit" ? props.link.icon || "" : ""}
+        info="Emoji or Raycast icon name (e.g., Link, Globe, Code, Star)"
       />
       <Form.TextField
         id="keywords"

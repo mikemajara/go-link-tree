@@ -6,6 +6,8 @@ import {
   open,
   showToast,
   Toast,
+  Alert,
+  confirmAlert,
 } from "@raycast/api";
 import { execFile } from "child_process";
 import { promisify } from "util";
@@ -16,6 +18,7 @@ import type { Link, LinkGroup } from "../types";
 import { resolveIcon } from "../lib/icons";
 import { getIconForUrl } from "../lib/domain-icons";
 import { EditLinkForm } from "./EditLinkForm";
+import { removeLinkFromConfig, removeGroupFromConfig } from "../lib/config";
 
 const execFileAsync = promisify(execFile);
 
@@ -275,6 +278,70 @@ export function LinkItem({
     }
   };
 
+  const handleDeleteLink = async () => {
+    const confirmed = await confirmAlert({
+      title: "Delete Link",
+      message: `Are you sure you want to delete "${link.title}"?`,
+      primaryAction: {
+        title: "Delete",
+        style: Alert.ActionStyle.Destructive,
+      },
+    });
+
+    if (confirmed) {
+      try {
+        await removeLinkFromConfig(groupName, link.url);
+        await showToast({
+          style: Toast.Style.Success,
+          title: "Link Deleted",
+          message: `"${link.title}" has been removed`,
+        });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to delete link";
+        await showToast({
+          style: Toast.Style.Failure,
+          title: "Delete Failed",
+          message: errorMessage,
+        });
+      }
+    }
+  };
+
+  const handleDeleteGroup = async () => {
+    const group = groups.find((g) => g.name === groupName);
+    const linkCount = group?.links.length || 0;
+    const groupDisplayName = group?.title || groupName;
+
+    const confirmed = await confirmAlert({
+      title: "Delete Group",
+      message: `Delete "${groupDisplayName}" and all ${linkCount} link${linkCount !== 1 ? "s" : ""}?`,
+      primaryAction: {
+        title: "Delete Group",
+        style: Alert.ActionStyle.Destructive,
+      },
+    });
+
+    if (confirmed) {
+      try {
+        await removeGroupFromConfig(groupName);
+        await showToast({
+          style: Toast.Style.Success,
+          title: "Group Deleted",
+          message: `"${groupDisplayName}" has been removed`,
+        });
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "Failed to delete group";
+        await showToast({
+          style: Toast.Style.Failure,
+          title: "Delete Failed",
+          message: errorMessage,
+        });
+      }
+    }
+  };
+
   // Build accessories array for browser/profile info
   const accessories: List.Item.Accessory[] = [];
   if (targetApplication) {
@@ -335,6 +402,20 @@ export function LinkItem({
             title="Create New Link"
             target={<EditLinkForm mode="create" groups={groups} />}
             shortcut={{ modifiers: ["cmd"], key: "n" }}
+          />
+          <Action
+            icon={Icon.Trash}
+            title="Delete Link"
+            style={Action.Style.Destructive}
+            onAction={handleDeleteLink}
+            shortcut={{ modifiers: ["cmd", "shift"], key: "backspace" }}
+          />
+          <Action
+            icon={Icon.Trash}
+            title="Delete Group"
+            style={Action.Style.Destructive}
+            onAction={handleDeleteGroup}
+            shortcut={{ modifiers: ["cmd", "opt"], key: "backspace" }}
           />
         </ActionPanel>
       }

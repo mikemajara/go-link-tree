@@ -245,3 +245,73 @@ export async function addLinkToConfig(
     throw new Error(`Failed to write configuration file: ${error}`);
   }
 }
+
+/**
+ * Helper to write config back to file
+ */
+async function writeConfig(config: GoLinkConfig): Promise<void> {
+  const resolvedPath = getConfigPath();
+  const isYaml =
+    resolvedPath.endsWith(".yaml") || resolvedPath.endsWith(".yml");
+  let content: string;
+
+  if (isYaml) {
+    content = yaml.dump(config, {
+      indent: 2,
+      lineWidth: -1,
+      quotingType: '"',
+      forceQuotes: false,
+    });
+  } else {
+    content = JSON.stringify(config, null, 2);
+  }
+
+  fs.writeFileSync(resolvedPath, content, "utf-8");
+}
+
+/**
+ * Removes a link from the configuration file.
+ */
+export async function removeLinkFromConfig(
+  groupName: string,
+  linkUrl: string
+): Promise<void> {
+  const config = await loadConfig();
+
+  const group = config.groups.find((g) => g.name === groupName);
+  if (!group) {
+    throw new Error(`Group "${groupName}" not found in configuration`);
+  }
+
+  const linkIndex = group.links.findIndex((l) => l.url === linkUrl);
+  if (linkIndex === -1) {
+    throw new Error(
+      `Link with URL "${linkUrl}" not found in group "${groupName}"`
+    );
+  }
+
+  group.links.splice(linkIndex, 1);
+  await writeConfig(config);
+}
+
+/**
+ * Removes an entire group from the configuration file.
+ * Throws error if trying to delete the last remaining group.
+ */
+export async function removeGroupFromConfig(groupName: string): Promise<void> {
+  const config = await loadConfig();
+
+  if (config.groups.length === 1) {
+    throw new Error(
+      "Cannot delete the last group. At least one group must exist."
+    );
+  }
+
+  const groupIndex = config.groups.findIndex((g) => g.name === groupName);
+  if (groupIndex === -1) {
+    throw new Error(`Group "${groupName}" not found in configuration`);
+  }
+
+  config.groups.splice(groupIndex, 1);
+  await writeConfig(config);
+}

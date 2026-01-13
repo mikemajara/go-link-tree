@@ -12,7 +12,7 @@ import * as fs from "fs";
 import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
 import { EditLinkForm } from "./components/EditLinkForm";
-import type { GoLinkConfig, Link } from "./types";
+import type { GoLinkConfig } from "./types";
 
 // Arguments type defined locally to satisfy strict build checks
 // (mirrors auto-generated Arguments.Go from raycast-env.d.ts)
@@ -106,33 +106,34 @@ export default function Command(
     };
   }, [reloadConfig]);
 
-  // Filter links based on search text
-  const getFilteredLinks = useCallback(() => {
+  // Filter groups and their links based on search text
+  const getFilteredGroups = useCallback(() => {
     if (!config) return [];
 
-    const allLinks: { link: Link; groupName: string; groupTitle: string }[] =
-      [];
-    for (const group of config.groups) {
-      for (const link of group.links) {
-        allLinks.push({ link, groupName: group.name, groupTitle: group.title });
-      }
-    }
-
-    if (!searchText) return allLinks;
+    if (!searchText) return config.groups;
 
     const query = searchText.toLowerCase();
-    return allLinks.filter(({ link }) => {
-      const titleMatch = link.title.toLowerCase().includes(query);
-      const urlMatch = link.url.toLowerCase().includes(query);
-      const keywordsMatch = link.keywords?.some((kw) =>
-        kw.toLowerCase().includes(query)
-      );
-      return titleMatch || urlMatch || keywordsMatch;
-    });
+    return config.groups
+      .map((group) => ({
+        ...group,
+        links: group.links.filter((link) => {
+          const titleMatch = link.title.toLowerCase().includes(query);
+          const urlMatch = link.url.toLowerCase().includes(query);
+          const keywordsMatch = link.keywords?.some((kw) =>
+            kw.toLowerCase().includes(query)
+          );
+          return titleMatch || urlMatch || keywordsMatch;
+        }),
+      }))
+      .filter((group) => group.links.length > 0);
   }, [config, searchText]);
 
   const configPath = getConfigPath();
-  const filteredLinks = getFilteredLinks();
+  const filteredGroups = getFilteredGroups();
+  const totalFilteredLinks = filteredGroups.reduce(
+    (sum, group) => sum + group.links.length,
+    0
+  );
 
   if (error) {
     return (
@@ -169,18 +170,22 @@ export default function Command(
       onSearchTextChange={setSearchText}
       filtering={false}
     >
-      {filteredLinks.map(({ link, groupName, groupTitle }, index) => (
-        <LinkItem
-          key={`${link.url}-${index}`}
-          link={link}
-          groupName={groupName}
-          groupTitle={groupTitle}
-          defaultBrowser={config?.settings?.defaultBrowser}
-          defaultProfile={config?.settings?.defaultProfile}
-          groups={config?.groups || []}
-        />
+      {filteredGroups.map((group) => (
+        <List.Section key={group.name} title={group.title}>
+          {group.links.map((link, index) => (
+            <LinkItem
+              key={`${link.url}-${index}`}
+              link={link}
+              groupName={group.name}
+              groupTitle={group.title}
+              defaultBrowser={config?.settings?.defaultBrowser}
+              defaultProfile={config?.settings?.defaultProfile}
+              groups={config?.groups || []}
+            />
+          ))}
+        </List.Section>
       ))}
-      {filteredLinks.length === 0 && !isLoading && (
+      {totalFilteredLinks === 0 && !isLoading && (
         <List.EmptyView
           icon={Icon.MagnifyingGlass}
           title="No Links Found"
