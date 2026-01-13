@@ -133,13 +133,13 @@ groups:
         url: "https://mail.google.com"
         keywords: ["work", "email", "gmail"]
         application: "com.google.Chrome"
-        profile: "Work"  # Your profile's display name
+        profile: "Work" # Your profile's display name
 
       - title: "Personal Gmail (Chrome Personal)"
         url: "https://mail.google.com"
         keywords: ["personal", "email", "gmail"]
         application: "com.google.Chrome"
-        profile: "Personal"  # Or use "Default" for the default profile
+        profile: "Personal" # Or use "Default" for the default profile
 
       - title: "Work Slack (Brave Work)"
         url: "https://app.slack.com"
@@ -151,7 +151,7 @@ groups:
         url: "http://localhost:3000"
         keywords: ["dev", "local", "firefox"]
         application: "org.mozilla.firefox"
-        profile: "dev"  # Firefox profile name from about:profiles
+        profile: "dev" # Firefox profile name from about:profiles
 
   - name: custom-icons
     title: "🎨 Custom Icon Examples"

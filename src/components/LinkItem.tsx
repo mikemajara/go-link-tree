@@ -12,17 +12,20 @@ import { promisify } from "util";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
-import type { Link } from "../types";
+import type { Link, LinkGroup } from "../types";
 import { resolveIcon } from "../lib/icons";
 import { getIconForUrl } from "../lib/domain-icons";
+import { EditLinkForm } from "./EditLinkForm";
 
 const execFileAsync = promisify(execFile);
 
 interface LinkItemProps {
   link: Link;
+  groupName: string;
   groupTitle?: string;
   defaultBrowser?: string;
   defaultProfile?: string;
+  groups: LinkGroup[];
 }
 
 // Map of known browser bundle identifiers to their app names for open command
@@ -147,8 +150,10 @@ function resolveProfileDirectory(app: string, profileName: string): string {
 
 export function LinkItem({
   link,
+  groupName,
   defaultBrowser,
   defaultProfile,
+  groups,
 }: LinkItemProps) {
   // Icon resolution priority:
   // 1. Explicit icon in config
@@ -316,6 +321,20 @@ export function LinkItem({
             content={`[${link.title}](${link.url})`}
             title="Copy as Markdown"
             shortcut={{ modifiers: ["cmd", "shift"], key: "c" }}
+          />
+          <Action.Push
+            icon={Icon.Pencil}
+            title="Configure Link"
+            target={
+              <EditLinkForm mode="edit" link={link} groupName={groupName} />
+            }
+            shortcut={{ modifiers: ["cmd"], key: "e" }}
+          />
+          <Action.Push
+            icon={Icon.Plus}
+            title="Create New Link"
+            target={<EditLinkForm mode="create" groups={groups} />}
+            shortcut={{ modifiers: ["cmd"], key: "n" }}
           />
         </ActionPanel>
       }

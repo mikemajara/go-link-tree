@@ -11,6 +11,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import * as fs from "fs";
 import { loadConfig, getConfigPath } from "./lib/config";
 import { LinkItem } from "./components/LinkItem";
+import { EditLinkForm } from "./components/EditLinkForm";
 import type { GoLinkConfig, Link } from "./types";
 
 // Arguments type defined locally to satisfy strict build checks
@@ -109,10 +110,11 @@ export default function Command(
   const getFilteredLinks = useCallback(() => {
     if (!config) return [];
 
-    const allLinks: { link: Link; groupTitle: string }[] = [];
+    const allLinks: { link: Link; groupName: string; groupTitle: string }[] =
+      [];
     for (const group of config.groups) {
       for (const link of group.links) {
-        allLinks.push({ link, groupTitle: group.title });
+        allLinks.push({ link, groupName: group.name, groupTitle: group.title });
       }
     }
 
@@ -167,13 +169,15 @@ export default function Command(
       onSearchTextChange={setSearchText}
       filtering={false}
     >
-      {filteredLinks.map(({ link, groupTitle }, index) => (
+      {filteredLinks.map(({ link, groupName, groupTitle }, index) => (
         <LinkItem
           key={`${link.url}-${index}`}
           link={link}
+          groupName={groupName}
           groupTitle={groupTitle}
           defaultBrowser={config?.settings?.defaultBrowser}
           defaultProfile={config?.settings?.defaultProfile}
+          groups={config?.groups || []}
         />
       ))}
       {filteredLinks.length === 0 && !isLoading && (
@@ -184,6 +188,18 @@ export default function Command(
             searchText
               ? `No links match "${searchText}"`
               : "No links configured"
+          }
+          actions={
+            config && (
+              <ActionPanel>
+                <Action.Push
+                  icon={Icon.Plus}
+                  title="Create New Link"
+                  target={<EditLinkForm mode="create" groups={config.groups} />}
+                  shortcut={{ modifiers: ["cmd"], key: "n" }}
+                />
+              </ActionPanel>
+            )
           }
         />
       )}

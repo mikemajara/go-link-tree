@@ -1,7 +1,7 @@
 import { getPreferenceValues } from "@raycast/api";
 import * as yaml from "js-yaml";
 import * as fs from "fs";
-import type { GoLinkConfig } from "../types";
+import type { GoLinkConfig, Link } from "../types";
 
 // Preferences type defined locally to satisfy strict build checks
 // (mirrors auto-generated ExtensionPreferences from raycast-env.d.ts)
@@ -130,4 +130,118 @@ export async function loadConfig(): Promise<GoLinkConfig> {
   }
 
   return validateConfig(parsed);
+}
+
+/**
+ * Updates a link in the configuration file.
+ * Finds the link by groupName and originalUrl, then replaces it with the updated link.
+ */
+export async function updateLinkInConfig(
+  groupName: string,
+  originalUrl: string,
+  updatedLink: Link
+): Promise<void> {
+  const resolvedPath = getConfigPath();
+
+  // Load current config
+  const config = await loadConfig();
+
+  // Find the group
+  const group = config.groups.find((g) => g.name === groupName);
+  if (!group) {
+    throw new Error(`Group "${groupName}" not found in configuration`);
+  }
+
+  // Find the link by original URL
+  const linkIndex = group.links.findIndex((l) => l.url === originalUrl);
+  if (linkIndex === -1) {
+    throw new Error(
+      `Link with URL "${originalUrl}" not found in group "${groupName}"`
+    );
+  }
+
+  // Update the link
+  group.links[linkIndex] = updatedLink;
+
+  // Write back to file
+  try {
+    const isYaml =
+      resolvedPath.endsWith(".yaml") || resolvedPath.endsWith(".yml");
+    let content: string;
+
+    if (isYaml) {
+      content = yaml.dump(config, {
+        indent: 2,
+        lineWidth: -1, // Don't wrap long lines
+        quotingType: '"',
+        forceQuotes: false,
+      });
+    } else {
+      content = JSON.stringify(config, null, 2);
+    }
+
+    fs.writeFileSync(resolvedPath, content, "utf-8");
+  } catch (err) {
+    const error = err instanceof Error ? err.message : "Unknown error";
+    throw new Error(`Failed to write configuration file: ${error}`);
+  }
+}
+
+/**
+ * Adds a new link to the configuration file.
+ * If groupName exists, appends to that group. If newGroupTitle is provided, creates a new group.
+ */
+export async function addLinkToConfig(
+  groupName: string,
+  newLink: Link,
+  newGroupTitle?: string
+): Promise<void> {
+  const resolvedPath = getConfigPath();
+
+  // Load current config
+  const config = await loadConfig();
+
+  // Find or create the group
+  let group = config.groups.find((g) => g.name === groupName);
+
+  if (!group) {
+    if (!newGroupTitle) {
+      throw new Error(
+        `Group "${groupName}" not found. Provide a title to create a new group.`
+      );
+    }
+    // Create new group
+    group = {
+      name: groupName,
+      title: newGroupTitle,
+      links: [],
+    };
+    config.groups.push(group);
+  }
+
+  // Add the new link
+  group.links.push(newLink);
+
+  // Write back to file
+  try {
+    const isYaml =
+      resolvedPath.endsWith(".yaml") || resolvedPath.endsWith(".yml");
+    let content: string;
+
+    if (isYaml) {
+      content = yaml.dump(config, {
+        indent: 2,
+        lineWidth: -1,
+        quotingType: '"',
+        forceQuotes: false,
+      });
+    } else {
+      content = JSON.stringify(config, null, 2);
+    }
+
+    fs.writeFileSync(resolvedPath, content, "utf-8");
+  } catch (err) {
+    const error = err instanceof Error ? err.message : "Unknown error";
+    throw new Error(`Failed to write configuration file: ${error}`);
+  }
 }
