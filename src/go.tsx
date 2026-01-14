@@ -106,23 +106,50 @@ export default function Command(
     };
   }, [reloadConfig]);
 
+  /**
+   * Normalize a string for search by:
+   * - Converting to lowercase
+   * - Replacing special characters with spaces (makes URLs searchable)
+   * - Collapsing multiple spaces into one
+   */
+  const normalizeForSearch = (str: string): string =>
+    str
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
   // Filter groups and their links based on search text
+  // Uses multi-word fuzzy matching across all link attributes
   const getFilteredGroups = useCallback(() => {
     if (!config) return [];
 
     if (!searchText) return config.groups;
 
-    const query = searchText.toLowerCase();
+    // Split search into words - ALL words must match somewhere
+    const queryWords = normalizeForSearch(searchText)
+      .split(" ")
+      .filter(Boolean);
+
+    if (queryWords.length === 0) return config.groups;
+
     return config.groups
       .map((group) => ({
         ...group,
         links: group.links.filter((link) => {
-          const titleMatch = link.title.toLowerCase().includes(query);
-          const urlMatch = link.url.toLowerCase().includes(query);
-          const keywordsMatch = link.keywords?.some((kw) =>
-            kw.toLowerCase().includes(query)
+          // Build searchable string from all attributes
+          const searchableString = normalizeForSearch(
+            [
+              link.title,
+              link.url,
+              group.title,
+              group.name,
+              ...(link.keywords || []),
+            ].join(" ")
           );
-          return titleMatch || urlMatch || keywordsMatch;
+
+          // Every query word must be found somewhere in the searchable string
+          return queryWords.every((word) => searchableString.includes(word));
         }),
       }))
       .filter((group) => group.links.length > 0);
