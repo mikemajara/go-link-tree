@@ -2,8 +2,6 @@
 
 A Raycast extension for quick access to a configurable tree of links. Think of it as your personal "go links" system—organize frequently visited URLs, search them instantly, and open them in specific browsers or profiles.
 
-![Go Link Tree](assets/link.png)
-
 ## Features
 
 - 🔗 **Organized Links** — Group links into sections (Work, Dev, Personal, etc.)
